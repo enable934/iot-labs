@@ -1,0 +1,36 @@
+services:
+  sensor_simulation:
+    image: python:3.9-slim
+    container_name: sensor_simulation_container
+    volumes:
+      - .:/app
+    working_dir: /app
+    command: sh -c "pip install -r requirements.txt && python -u main.py"
+    depends_on:
+      - mqtt_broker
+  gateway:
+    image: python:3.9-slim
+    container_name: gateway_container
+    volumes:
+      - .:/app
+    working_dir: /app
+    command: sh -c "pip install -r requirements.txt && python -u gateway.py"
+    depends_on:
+      - mqtt_broker
+  data_receiver:
+    image: python:3.9-slim
+    container_name: data_receiver_container
+    volumes:
+      - .:/app
+    working_dir: /app
+    command: sh -c "pip install -r requirements.txt && python -u data_receiver.py"
+    depends_on:
+      - mqtt_broker
+      - gateway
+  mqtt_broker:
+    image: eclipse-mosquitto
+    container_name: mqtt_broker
+    ports:
+      - "1883:1883"
+    volumes:
+      - ./mosquitto.conf:/mosquitto/config/mosquitto.conf
