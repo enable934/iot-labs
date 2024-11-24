@@ -1,0 +1,9 @@
+version: '3.8'
+
+services:
+  sensor_simulation:
+    build: .
+    container_name: sensor_simulation_container
+    volumes:
+      - .:/app
+    command: python main.py
